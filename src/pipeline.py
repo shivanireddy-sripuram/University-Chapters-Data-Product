@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from bronze import write_bronze
 from ingest import API_URL, fetch_university_chapters
+from quality import apply_quality_rules
 from silver import (
     create_spark_session,
     flatten_bronze,
@@ -52,11 +53,24 @@ def main():
             bronze_file,
         )
 
-        flattened_df = flatten_bronze(bronze_df)
+        flattened_df = flatten_bronze(
+            bronze_df,
+            run_id,
+        )
 
-        print("Flattened Bronze records:")
+        valid_df, quarantine_df = apply_quality_rules(
+            flattened_df
+        )
 
-        flattened_df.show(
+        print("Valid records after data-quality checks:")
+
+        valid_df.show(
+            truncate=False
+        )
+
+        print("Quarantined records:")
+
+        quarantine_df.show(
             truncate=False
         )
 

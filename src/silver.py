@@ -27,7 +27,7 @@ def inspect_bronze(spark, bronze_file):
     return bronze_df
 
 
-def flatten_bronze(bronze_df):
+def flatten_bronze(bronze_df, run_id):
     """Flatten ArcGIS features into one row per university chapter."""
 
     features_df = bronze_df.select(
@@ -42,6 +42,8 @@ def flatten_bronze(bronze_df):
         F.col("feature.geometry.x").alias("longitude"),
         F.col("feature.geometry.y").alias("latitude"),
         F.col("feature.attributes.OBJECTID").alias("source_object_id"),
+        F.lit(run_id).alias("ingest_run_id"),
+        F.to_json(F.col("feature")).alias("raw_payload"),
     )
 
     return flattened_df

@@ -1,0 +1,46 @@
+{
+  "features": [
+    {
+      "attributes": {
+        "OBJECTID": 9001,
+        "University_Chapter": "Synthetic Clean University",
+        "City": "Seattle",
+        "State": "WA",
+        "ChapterID": "TEST-001",
+        "MEVR_RD": "Synthetic Test"
+      },
+      "geometry": {
+        "x": -122.3321,
+        "y": 47.6062
+      }
+    },
+    {
+      "attributes": {
+        "OBJECTID": 9002,
+        "University_Chapter": "Synthetic Warning University",
+        "City": "UNKNOWN",
+        "State": "WA",
+        "ChapterID": "TEST-002",
+        "MEVR_RD": "Synthetic Test"
+      },
+      "geometry": {
+        "x": -122.6765,
+        "y": 45.5231
+      }
+    },
+    {
+      "attributes": {
+        "OBJECTID": 9003,
+        "University_Chapter": "Synthetic Invalid University",
+        "City": "Portland",
+        "State": "OR",
+        "ChapterID": "TEST-003",
+        "MEVR_RD": "Synthetic Test"
+      },
+      "geometry": {
+        "x": 999,
+        "y": 45.5152
+      }
+    }
+  ]
+}
