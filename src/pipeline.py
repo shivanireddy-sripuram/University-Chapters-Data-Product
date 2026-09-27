@@ -9,6 +9,10 @@ from silver import (
     flatten_bronze,
     inspect_bronze,
 )
+from storage import (
+    write_quarantine,
+    write_silver,
+)
 
 
 def generate_run_id():
@@ -62,17 +66,18 @@ def main():
             flattened_df
         )
 
-        print("Valid records after data-quality checks:")
-
-        valid_df.show(
-            truncate=False
+        silver_path = write_silver(
+            valid_df,
+            run_id,
         )
 
-        print("Quarantined records:")
-
-        quarantine_df.show(
-            truncate=False
+        quarantine_path = write_quarantine(
+            quarantine_df,
+            run_id,
         )
+
+        print(f"Silver data written to: {silver_path}")
+        print(f"Quarantine data written to: {quarantine_path}")
 
     finally:
         spark.stop()
