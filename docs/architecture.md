@@ -1,8 +1,8 @@
-\# Architecture and Engineering Decisions
+# Architecture and Engineering Decisions
 
 
 
-\## Overview
+## Overview
 
 
 
@@ -18,7 +18,7 @@ Records that fail hard data-quality rules are physically separated into Quaranti
 
 
 
-\## Bronze
+## Bronze
 
 
 
@@ -34,7 +34,7 @@ Business transformations are intentionally excluded from Bronze.
 
 
 
-\## Silver
+## Silver
 
 
 
@@ -46,21 +46,21 @@ Source fields are mapped as follows:
 
 
 
-\- ChapterID -> chapter\_id
+- ChapterID -> chapter_id
 
-\- University\_Chapter -> chapter\_name
+- University_Chapter -> chapter_name
 
-\- City -> city
+- City -> city
 
-\- State -> state
+- State -> state
 
-\- geometry.x -> longitude
+- geometry.x -> longitude
 
-\- geometry.y -> latitude
+- geometry.y -> latitude
 
 
 
-Silver performs deterministic deduplication by chapter\_id.
+Silver performs deterministic deduplication by chapter_id.
 
 
 
@@ -72,7 +72,7 @@ Parquet is used for curated outputs because it is typed, compressed, columnar, a
 
 
 
-\## Data Quality and Quarantine
+## Data Quality and Quarantine
 
 
 
@@ -84,17 +84,17 @@ A record is quarantined when longitude or latitude is:
 
 
 
-\- missing or null;
+- missing or null;
 
-\- non-numeric;
+- non-numeric;
 
-\- longitude outside \[-180, 180]; or
+- longitude outside \[-180, 180]; or
 
-\- latitude outside \[-90, 90].
+- latitude outside \[-90, 90].
 
 
 
-These records receive quarantine reason INVALID\_COORDINATES.
+These records receive quarantine reason INVALID_COORDINATES.
 
 
 
@@ -106,19 +106,19 @@ City quality is a warning-level rule.
 
 
 
-A null, blank, or case-insensitive UNKNOWN city receives warning MISSING\_OR\_UNKNOWN\_CITY.
+A null, blank, or case-insensitive UNKNOWN city receives warning MISSING_OR_UNKNOWN_CITY.
 
 
 
-Warning records remain eligible for Gold and are labelled with dq\_status WARNING.
+Warning records remain eligible for Gold and are labelled with dq_status WARNING.
 
 
 
-Clean records receive dq\_status OK.
+Clean records receive dq_status OK.
 
 
 
-\## Batch-Level Quality
+## Batch-Level Quality
 
 
 
@@ -138,7 +138,7 @@ This prevents legitimate zero counts for OR or WA from being incorrectly treated
 
 
 
-\## Gold as a Data Product
+## Gold as a Data Product
 
 
 
@@ -150,19 +150,19 @@ Gold v1 has:
 
 
 
-\- a stable interface;
+- a stable interface;
 
-\- an explicit schema and grain;
+- an explicit schema and grain;
 
-\- ownership;
+- ownership;
 
-\- quality semantics;
+- quality semantics;
 
-\- freshness expectations;
+- freshness expectations;
 
-\- classification; and
+- classification; and
 
-\- versioning rules.
+- versioning rules.
 
 
 
@@ -170,15 +170,15 @@ Only records that pass hard DQ rules are eligible for Gold.
 
 
 
-Warning-level records remain visible through dq\_status and dq\_warnings.
+Warning-level records remain visible through dq_status and dq_warnings.
 
 
 
-The complete contract is documented in docs/data\_product\_contract.md.
+The complete contract is documented in docs/data_product_contract.md.
 
 
 
-\## Failure Behaviour
+## Failure Behaviour
 
 
 
@@ -186,11 +186,11 @@ The pipeline fails loudly when:
 
 
 
-\- the HTTP source request fails;
+- the HTTP source request fails;
 
-\- the complete source batch is empty; or
+- the complete source batch is empty; or
 
-\- California unexpectedly contains zero records.
+- California unexpectedly contains zero records.
 
 
 
@@ -198,7 +198,7 @@ Individual records with invalid coordinates are quarantined rather than failing 
 
 
 
-\## Idempotency
+## Idempotency
 
 
 
@@ -218,7 +218,7 @@ Repeated successful publication therefore replaces the current Gold snapshot rat
 
 
 
-For a larger incremental workload, Delta Lake MERGE keyed by chapter\_id would be a reasonable alternative.
+For a larger incremental workload, Delta Lake MERGE keyed by chapter_id would be a reasonable alternative.
 
 
 
@@ -226,7 +226,7 @@ Snapshot overwrite was selected because this source is a small current-state dat
 
 
 
-\## Azure Mapping
+## Azure Mapping
 
 
 
@@ -238,11 +238,11 @@ The local architecture maps naturally to Azure:
 
 
 
-\- ADLS Gen2 for Bronze, Silver, Quarantine, and Gold storage;
+- ADLS Gen2 for Bronze, Silver, Quarantine, and Gold storage;
 
-\- Azure Databricks or Synapse Spark for Spark processing; and
+- Azure Databricks or Synapse Spark for Spark processing; and
 
-\- Azure Data Factory for production scheduling and orchestration.
+- Azure Data Factory for production scheduling and orchestration.
 
 
 
@@ -250,7 +250,7 @@ The Spark transformation logic would require minimal change when moved to a mana
 
 
 
-\## Scope and Trade-offs
+## Scope and Trade-offs
 
 
 
@@ -258,17 +258,17 @@ The solution intentionally does not introduce:
 
 
 
-\- infrastructure-as-code;
+- infrastructure-as-code;
 
-\- CI/CD pipelines;
+- CI/CD pipelines;
 
-\- production scheduling;
+- production scheduling;
 
-\- external catalogs;
+- external catalogs;
 
-\- secret-management infrastructure; or
+- secret-management infrastructure; or
 
-\- SCD Type 2 processing.
+- SCD Type 2 processing.
 
 
 

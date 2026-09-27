@@ -1,4 +1,4 @@
-\# University Chapters Azure Medallion Data Product
+# University Chapters Azure Medallion Data Product
 
 
 
@@ -6,7 +6,7 @@ A Spark-based medallion pipeline that retrieves active university chapter data f
 
 
 
-\## Architecture
+## Architecture
 
 
 
@@ -26,15 +26,15 @@ Detailed engineering decisions are documented in docs/architecture.md.
 
 
 
-The Gold data product contract is documented in docs/data\_product\_contract.md.
+The Gold data product contract is documented in docs/data_product_contract.md.
 
 
 
-\## Source
+## Source
 
 
 
-The pipeline queries the public ArcGIS UniversityChapters\_Public FeatureServer.
+The pipeline queries the public ArcGIS UniversityChapters_Public FeatureServer.
 
 
 
@@ -46,17 +46,17 @@ Source mappings:
 
 
 
-\- ChapterID -> chapter\_id
+- ChapterID -> chapter_id
 
-\- University\_Chapter -> chapter\_name
+- University_Chapter -> chapter_name
 
-\- City -> city
+- City -> city
 
-\- State -> state
+- State -> state
 
-\- geometry.x -> longitude
+- geometry.x -> longitude
 
-\- geometry.y -> latitude
+- geometry.y -> latitude
 
 
 
@@ -64,7 +64,7 @@ The public API requires no credentials or secrets.
 
 
 
-\## Repository Structure
+## Repository Structure
 
 
 
@@ -80,7 +80,7 @@ docs/ contains the architecture decisions and Gold data product contract.
 
 
 
-\## Prerequisites
+## Prerequisites
 
 
 
@@ -88,11 +88,11 @@ Tested with:
 
 
 
-\- Python 3.14.4
+- Python 3.14.4
 
-\- Java 21
+- Java 21
 
-\- PySpark 4.2.0
+- PySpark 4.2.0
 
 
 
@@ -100,7 +100,7 @@ A Linux environment is recommended. WSL is recommended when running on Windows.
 
 
 
-\## Setup
+## Setup
 
 
 
@@ -120,7 +120,7 @@ From the repository root:
 
 
 
-\## Run Tests
+## Run Tests
 
 
 
@@ -140,7 +140,7 @@ Synthetic bad records are included so DQ behaviour remains reproducible even whe
 
 
 
-\## Run the Pipeline
+## Run the Pipeline
 
 
 
@@ -174,31 +174,31 @@ A successful execution:
 
 
 
-\## Generated Data Layout
+## Generated Data Layout
 
 
 
 Bronze:
 
-data/bronze/university\_chapters/<run\_id>/
+data/bronze/university_chapters/<run_id>/
 
 
 
 Silver:
 
-data/silver/university\_chapters/run\_id=<run\_id>/
+data/silver/university_chapters/run_id=<run_id>/
 
 
 
 Quarantine:
 
-data/quarantine/university\_chapters/run\_id=<run\_id>/
+data/quarantine/university_chapters/run_id=<run_id>/
 
 
 
 Gold:
 
-data/gold/university\_chapters/v1/
+data/gold/university_chapters/v1/
 
 
 
@@ -206,19 +206,19 @@ The data/ directory is excluded from Git because it contains generated pipeline 
 
 
 
-\## Data Quality
+## Data Quality
 
 
 
-Invalid, missing, non-numeric, or out-of-range coordinates are quarantined with reason INVALID\_COORDINATES.
+Invalid, missing, non-numeric, or out-of-range coordinates are quarantined with reason INVALID_COORDINATES.
 
 
 
-A null, blank, or case-insensitive UNKNOWN city remains publishable with dq\_status WARNING and warning MISSING\_OR\_UNKNOWN\_CITY.
+A null, blank, or case-insensitive UNKNOWN city remains publishable with dq_status WARNING and warning MISSING_OR_UNKNOWN_CITY.
 
 
 
-Clean records receive dq\_status OK.
+Clean records receive dq_status OK.
 
 
 
@@ -226,7 +226,7 @@ The pipeline fails if the complete source batch is empty or if California unexpe
 
 
 
-\## Metrics
+## Metrics
 
 
 
@@ -234,23 +234,23 @@ Each execution logs:
 
 
 
-\- rows\_in
+- rows_in
 
-\- rows\_after\_dedup
+- rows_after_dedup
 
-\- rows\_quarantined
+- rows_quarantined
 
-\- rows\_warned
+- rows_warned
 
-\- rows\_ok
-
-
-
-\## Gold Publishing Strategy
+- rows_ok
 
 
 
-Gold v1 is published to the stable path data/gold/university\_chapters/v1/.
+## Gold Publishing Strategy
+
+
+
+Gold v1 is published to the stable path data/gold/university_chapters/v1/.
 
 
 
@@ -262,11 +262,11 @@ Because the source is a small current-state dataset, Gold uses snapshot overwrit
 
 
 
-For a larger incremental production workload, Delta Lake MERGE keyed by chapter\_id would be a natural alternative.
+For a larger incremental production workload, Delta Lake MERGE keyed by chapter_id would be a natural alternative.
 
 
 
-\## Azure Production Mapping
+## Azure Production Mapping
 
 
 
