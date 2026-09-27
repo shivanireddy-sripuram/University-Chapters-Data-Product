@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from ingest import fetch_university_chapters
+from ingest import API_URL, fetch_university_chapters
 from bronze import write_bronze
 
 
@@ -30,7 +30,11 @@ def main():
 
     print(f"Rows received from source: {len(features)}")
 
-    bronze_file = write_bronze(payload, run_id)
+    bronze_file = write_bronze(
+        payload, 
+        run_id, 
+        API_URL,
+        )
 
     print(f"Bronze payload written to: {bronze_file}")
     print("Bronze ingestion completed successfully.")
