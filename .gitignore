@@ -1,0 +1,23 @@
+# Python virtual environment
+.venv/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# Test/cache files
+.pytest_cache/
+
+# Environment/secrets
+.env
+.env.*
+
+# VS Code local settings
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Local pipeline output
+data/
