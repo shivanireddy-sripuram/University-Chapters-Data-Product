@@ -41,6 +41,20 @@
         "x": 999,
         "y": 45.5152
       }
+    },
+    {
+      "attributes": {
+        "OBJECTID": 9004,
+        "University_Chapter": "Synthetic Non Numeric University",
+        "City": "Los Angeles",
+        "State": "CA",
+        "ChapterID": "TEST-004",
+        "MEVR_RD": "Synthetic Test"
+      },
+      "geometry": {
+        "x": "not-a-number",
+        "y": 34.0522
+      }
     }
   ]
 }

@@ -6,13 +6,10 @@ MISSING_OR_UNKNOWN_CITY = "MISSING_OR_UNKNOWN_CITY"
 
 
 def apply_quality_rules(df):
-    """
-    Apply data-quality rules and separate valid records
-    from records that must be quarantined.
-    """
+    """Apply row-level DQ rules."""
 
-    longitude_as_double = F.col("longitude").cast("double")
-    latitude_as_double = F.col("latitude").cast("double")
+    longitude_as_double = F.expr("try_cast(longitude as double)")
+    latitude_as_double = F.expr("try_cast(latitude as double)")
 
     invalid_coordinates = (
         longitude_as_double.isNull()
@@ -29,14 +26,10 @@ def apply_quality_rules(df):
 
     evaluated_df = (
         df
-        .withColumn(
-            "_invalid_coordinates",
-            invalid_coordinates,
-        )
-        .withColumn(
-            "_missing_or_unknown_city",
-            missing_or_unknown_city,
-        )
+        .withColumn("_longitude_as_double", longitude_as_double)
+        .withColumn("_latitude_as_double", latitude_as_double)
+        .withColumn("_invalid_coordinates", invalid_coordinates)
+        .withColumn("_missing_or_unknown_city", missing_or_unknown_city)
     )
 
     quarantine_df = (
@@ -63,14 +56,8 @@ def apply_quality_rules(df):
     valid_df = (
         evaluated_df
         .filter(~F.col("_invalid_coordinates"))
-        .withColumn(
-            "longitude",
-            longitude_as_double,
-        )
-        .withColumn(
-            "latitude",
-            latitude_as_double,
-        )
+        .withColumn("longitude", F.col("_longitude_as_double"))
+        .withColumn("latitude", F.col("_latitude_as_double"))
         .withColumn(
             "dq_status",
             F.when(
@@ -100,3 +87,21 @@ def apply_quality_rules(df):
     )
 
     return valid_df, quarantine_df
+
+
+def validate_batch(df):
+    """Validate batch-level source expectations."""
+
+    rows_in = df.count()
+
+    if rows_in == 0:
+        raise RuntimeError(
+            "Batch quality check failed: source batch is empty."
+        )
+
+    ca_rows = df.filter(F.col("state") == "CA").count()
+
+    if ca_rows == 0:
+        raise RuntimeError(
+            "Batch quality check failed: California returned zero records."
+        )
