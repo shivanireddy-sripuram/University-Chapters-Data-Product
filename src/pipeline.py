@@ -1,8 +1,13 @@
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from ingest import API_URL, fetch_university_chapters
 from bronze import write_bronze
+from ingest import API_URL, fetch_university_chapters
+from silver import (
+    create_spark_session,
+    flatten_bronze,
+    inspect_bronze,
+)
 
 
 def generate_run_id():
@@ -31,13 +36,32 @@ def main():
     print(f"Rows received from source: {len(features)}")
 
     bronze_file = write_bronze(
-        payload, 
-        run_id, 
+        payload,
+        run_id,
         API_URL,
-        )
+    )
 
     print(f"Bronze payload written to: {bronze_file}")
     print("Bronze ingestion completed successfully.")
+
+    spark = create_spark_session()
+
+    try:
+        bronze_df = inspect_bronze(
+            spark,
+            bronze_file,
+        )
+
+        flattened_df = flatten_bronze(bronze_df)
+
+        print("Flattened Bronze records:")
+
+        flattened_df.show(
+            truncate=False
+        )
+
+    finally:
+        spark.stop()
 
 
 if __name__ == "__main__":
